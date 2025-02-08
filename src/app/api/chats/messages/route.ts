@@ -1,20 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import SendMessageUseCase from "@/modules/chat/application/send-message-use-case";
-import ChatPrismaRepository from "@/modules/chat/infrastructure/chat-prisma-repository";
-import buildResponse from "../../lib/buildResponse";
+import buildResponse from "../../lib/build-response";
+import authService from "@/modules/auth/infrastructure/auth-service-impl";
+import ChatServiceImpl from "@/modules/chat/application/service/chat-service-impl";
+import buildErrorResponse from "../../lib/build-error-response";
 
-const USER_ID = "cm6wap5i900002845efpd0cce";
-
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const { chatId, message } = await req.json();
+    const userDetails = await authService.getAuthUserDetails();
     const sendMessageUseCase = new SendMessageUseCase(
-      new ChatPrismaRepository()
+      new ChatServiceImpl()
     );
-    const chat = await sendMessageUseCase.execute(chatId, message, USER_ID);
+    const chat = await sendMessageUseCase.execute(
+      chatId,
+      message,
+      userDetails.id
+    );
 
     return buildResponse({ message: "Message saved", data: chat, status: 201 });
-  } catch (error) {
-    return buildResponse({ message: "Unknown error saving the message", data: { error }, status: 500 });
+  } catch (error: unknown) {
+    return buildErrorResponse(error)
   }
 }

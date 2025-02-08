@@ -5,7 +5,7 @@ interface ResponseParams {
 }
 
 export default function buildResponse({ message, data, status }: ResponseParams) {
-  return new Response(JSON.stringify({ message, data }), {
+  return Response.json({ message, data }, {
     status,
   });
 }
