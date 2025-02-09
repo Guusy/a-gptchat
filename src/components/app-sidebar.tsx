@@ -4,25 +4,45 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import chatService from "@/lib/service/chat-service";
+import { useQuery } from "@tanstack/react-query";
+import { SquarePen } from "lucide-react";
+import Link from "next/link";
 
+export function AppSidebar({ initialData }) {
+  const { data } = useQuery({
+    queryKey: ["chats"],
+    queryFn: () => chatService.getChats().then( r => r.data),
+    initialData: initialData,
+    staleTime: 1000 * 60 * 5,
+  });
 
-export function AppSidebar({ chats }) {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar>
       <SidebarContent>
+        <SidebarHeader className="flex-row justify-between ">
+          <SidebarTrigger />
+          <div className="flex justify-end p-1">
+            <Link href={"/chat"}>
+              <SquarePen />
+            </Link>
+          </div>
+        </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupLabel>Tus chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {chats.map((chat) => (
+              {data.map((chat: { id: string; name: string }) => (
                 <SidebarMenuItem key={chat.id}>
                   <SidebarMenuButton asChild>
                     <Link href={`/chat/${chat.id}`}>
+                      {/* TODO:close sidebar on link */}
                       <span>{chat.name}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -33,5 +53,5 @@ export function AppSidebar({ chats }) {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

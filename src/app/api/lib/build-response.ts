@@ -1,11 +1,10 @@
 interface ResponseParams {
-  message: string;
-  data: unknown;
+  data: object;
   status: number;
 }
 
-export default function buildResponse({ message, data, status }: ResponseParams) {
-  return Response.json({ message, data }, {
+export default function buildResponse({ data, status }: ResponseParams) {
+  return Response.json(data, {
     status,
   });
 }

@@ -12,7 +12,7 @@ export default function ChatLayout({
 }) {
   return (
     <SidebarProvider>
-      <AppSidebar chats={chats} />
+      <AppSidebar initialData={chats} />
       <SidebarTrigger />
       <main className="flex-1 p-4 overflow-auto">{children}</main>
     </SidebarProvider>
