@@ -74,7 +74,11 @@ class ChatGptAdapter {
       system_fingerprint: "fp_bd83329f63",
     };
     const [{ message }] = chatGptResponse.choices;
-    return Promise.resolve(new AssistantMessage(message.content));
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(new AssistantMessage(message.content));
+      }, 3000);
+    });
   }
 }
 

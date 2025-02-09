@@ -4,8 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import ChatService from "@/lib/service/chat-service";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "./message";
+import { LoaderPinwheel } from "lucide-react";
 
 export default function Chat({
   id,
@@ -14,6 +15,9 @@ export default function Chat({
   id: string;
   initialData: unknown[];
 }) {
+  const [sendingMsg, setSendingMsg] = useState<{ message: string } | null>(
+    null
+  );
   const router = useRouter();
   const { toast } = useToast();
 
@@ -33,7 +37,7 @@ export default function Chat({
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["chat", id],
-    queryFn: () => ChatService.getChat(id).then(r => r.data),
+    queryFn: () => ChatService.getChat(id).then((r) => r.data),
     initialData,
     staleTime: 1000 * 60 * 5,
   });
@@ -60,10 +64,21 @@ export default function Chat({
             <Message key={index} role={msg.role} content={msg.content} />
           )
         )}
+        {sendingMsg && (
+          <>
+            <Message role="user" content={sendingMsg.message} />
+            <div className="flex justify-start items-center space-x-2">
+              <LoaderPinwheel
+                className="animate-spin text-grey-500"
+                size={18}
+              />
+            </div>
+          </>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      <ChatInput chatId={id} />
+      <ChatInput chatId={id} setSendingMsg={setSendingMsg} />
     </div>
   );
 }
