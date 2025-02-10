@@ -1,3 +1,10 @@
+import { RateLimiterRes } from "rate-limiter-flexible";
+
+interface ErrorHttp {
+  status: number;
+  body: object;
+}
+
 interface ErrorMapping {
   [key: string]: {
     status: number;
@@ -13,10 +20,17 @@ const errorMapping: ErrorMapping = {
   MaxTokenLimit: {
     status: 400,
     message: "The request exceeds the max token permitted",
-  }
+  },
 };
 
-export default function errorHandler(error: Error) {
+export default function errorHandler(error: Error): ErrorHttp {
+  if (error instanceof RateLimiterRes) {
+    return {
+      status: 429,
+      body: { message: "Too many requests" },
+    };
+  }
+
   const domainError = errorMapping[error.name];
 
   const errorDetails = domainError || {
