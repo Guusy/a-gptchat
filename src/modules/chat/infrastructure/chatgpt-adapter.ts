@@ -51,7 +51,6 @@ class ChatGptAdapter {
             content: `Te respondo a "${content}"`,
             refusal: null,
           },
-          logprobs: null,
           finish_reason: "stop",
         },
       ],

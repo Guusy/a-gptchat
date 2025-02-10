@@ -3,14 +3,14 @@ import chatService from "@/lib/service/chat-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 
 export function ChatInput({
   chatId,
-  setSendingMsg,
+  setSendingMsg = () => {}, 
 }: {
   chatId?: string;
-  setSendingMsg: Dispatch<SetStateAction<{ message: string } | null>>;
+  setSendingMsg?: (msg: { message: string } | null) => void ;
 }) {
   const [inputText, setInputText] = useState("");
   const queryClient = useQueryClient();
