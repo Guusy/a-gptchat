@@ -10,6 +10,10 @@ const errorMapping: ErrorMapping = {
     status: 404,
     message: "Cannot find the chat with this specific id",
   },
+  MaxTokenLimit: {
+    status: 400,
+    message: "The request exceeds the max token permitted",
+  }
 };
 
 export default function errorHandler(error: Error) {

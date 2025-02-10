@@ -1,18 +1,23 @@
 "use client";
+import { MAX_TOKENS } from "@/lib/constants";
 import chatService from "@/lib/service/chat-service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export function ChatInput({
   chatId,
-  setSendingMsg = () => {}, 
+  setSendingMsg = () => {},
 }: {
   chatId?: string;
-  setSendingMsg?: (msg: { message: string } | null) => void ;
+  setSendingMsg?: (msg: { message: string } | null) => void;
 }) {
   const [inputText, setInputText] = useState("");
+  const wordCount = useMemo(
+    () => inputText.trim().split(/\s+/).length,
+    [inputText]
+  );
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -34,7 +39,7 @@ export function ChatInput({
   });
 
   const sendMessage = async () => {
-    if (!sendMessageMutation.isPending) {
+    if (!sendMessageMutation.isPending && wordCount <= MAX_TOKENS) {
       if (inputText.trim()) {
         await sendMessageMutation.mutate({ chatId, message: inputText });
       }
@@ -47,29 +52,53 @@ export function ChatInput({
     }
   };
 
+  const onChangeInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = event.target.value;
+    if (wordCount <= MAX_TOKENS) {
+      setInputText(text);
+    }
+  };
+
   return (
     <>
       {/* TODO: make this with floating at bottom position */}
       <div className="flex justify-center items-center p-4 w-full">
-        <textarea
-          disabled={sendMessageMutation.isPending}
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          rows={1}
-          placeholder="Escribe tu mensaje..."
-          className="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-[#323232d9] text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={sendMessage}
-          className="ml-2 p-2 bg-blue-500 rounded-full hover:bg-blue-600 disabled:bg-gray-400"
-          disabled={sendMessageMutation.isPending || !inputText.trim()}
-        >
-          <Send className="text-white" size={20} />
-        </button>
+        <div className="relative w-full">
+          <textarea
+            disabled={sendMessageMutation.isPending}
+            value={inputText}
+            onChange={onChangeInput}
+            onKeyDown={handleKeyDown}
+            rows={4}
+            placeholder="Escribe tu mensaje..."
+            className="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-[#323232d9] text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            onClick={sendMessage}
+            className="absolute right-2 bottom-3 p-2 bg-blue-500 rounded-full hover:bg-blue-600 disabled:bg-gray-400"
+            disabled={
+              sendMessageMutation.isPending ||
+              !inputText.trim() ||
+              wordCount > 50
+            }
+          >
+            <Send className="text-white" size={20} />
+          </button>
+
+          <span
+            className={`absolute bottom-3 left-3 text-xs ${
+              wordCount > MAX_TOKENS ? "text-red-500" : "text-gray-400"
+            }`}
+          >
+            {wordCount} / {MAX_TOKENS}
+          </span>
+        </div>
       </div>
       {sendMessageMutation.error && (
-        <>Hubo un error intentando procesar tu request, vuelve a intentar</>
+        <div className="p-3 bg-red-500 text-white rounded-lg shadow-md text-center animate-fadeIn mb-2">
+          Hubo un error al enviar el mensaje. Intenta nuevamente.
+        </div>
       )}
     </>
   );

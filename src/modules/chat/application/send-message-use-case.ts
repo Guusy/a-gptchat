@@ -1,14 +1,26 @@
 import Chat from "../domain/chat";
 import ChatService from "../domain/chat-service";
+import { MaxTokenLimit } from "../domain/exception/MaxTokenLimit";
 import UserMessage from "../domain/message/user-message";
 import chatgptAdapter from "../infrastructure/chatgpt-adapter";
 
 export default class SendMessageUseCase {
   constructor(private chatService: ChatService) {}
-  async execute(chatId: string, content: string, userId: string) : Promise<Chat> {
+  async execute(
+    chatId: string,
+    content: string,
+    userId: string
+  ): Promise<Chat> {
     const userMessage = new UserMessage(content);
+
+    if (userMessage.exceedsMaxTokenLimit()) {
+      throw new MaxTokenLimit({ tokens: userMessage.getTokens() });
+    }
+
     if (chatId) {
-      const chat : Chat = await this.chatService.getChat(chatId, { messages: true });
+      const chat: Chat = await this.chatService.getChat(chatId, {
+        messages: true,
+      });
       const history = chat.getLastMessages();
       const assistantMessage = await chatgptAdapter.sendMessage(
         content,
