@@ -4,11 +4,11 @@ import Message from "./message/message";
 
 export default interface ChatService {
 
-    getChat(id: string, includes?: ChatIncludes ): Chat
+    getChat(id: string, includes?: ChatIncludes ): Promise<Chat>
 
-    addMessages(chatId: string, messages: Message[]): unknown
+    addMessages(chatId: string, messages: Message[]): Promise<Chat>
     
-    createChat(chat: Chat): unknown; //TODO: Chat;
+    createChat(chat: Chat): Promise<Chat>; 
     
-    getUserChats(userId: string): unknown; //TODO: Chat;
+    getUserChats(userId: string): Promise<Chat[]>;
 }

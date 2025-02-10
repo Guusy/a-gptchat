@@ -34,10 +34,25 @@ interface ChatGptResponse {
   system_fingerprint: string;
 }
 
+type ChatGptMessage = Omit<
+  Message,
+  "id" | "createdAt" | "updatedAt" | "chatId"
+>;
+interface ChatGptRequest {
+  model: string;
+  messages: ChatGptMessage[];
+}
+//TODO: make a interface, to work with ioc
 class ChatGptAdapter {
-  sendMessage(content: string): Promise<Message> {
-    // const messageToSend = { role: "user", content };
-    //TODO: make a stub and normal adapter, and move to interface
+  sendMessage(content: string, history: Message[] = []): Promise<Message> {
+    const body: ChatGptRequest = {
+      model: "gpt-4o-mini",
+      messages: [
+        ...history.map((msg) => ({ role: msg.role, content: msg.content })),
+        { role: "user", content },
+      ],
+    };
+    console.log("Sending mock chatgpt request", body);
     const chatGptResponse: ChatGptResponse = {
       id: "chatcmpl-Ay42Vk8liv9GtXtF7EtPdAx5M2WuA",
       object: "chat.completion",

@@ -3,6 +3,7 @@ import Chat from "../domain/chat";
 import ChatRepository, { ChatIncludes } from "../domain/chat-repository";
 import { PrismaClient } from "@prisma/client";
 import Message from "../domain/message/message";
+import chatMapper from "../application/mapper/chat-mapper";
 
 export default class ChatPrismaRepository implements ChatRepository {
   prisma: PrismaClient;
@@ -11,20 +12,32 @@ export default class ChatPrismaRepository implements ChatRepository {
     this.prisma = prisma;
   }
 
-  findById(id: string, includes: ChatIncludes | undefined): unknown {
-    const includeStatement = includes ? { include: {...includes}} : { include: { }} //TODO: improve it, and make the sort by createdAt mandatory when the msgs are present
-    return this.prisma.chat.findUnique({
+  async findById(
+    id: string,
+    includes: ChatIncludes | undefined
+  ): Promise<Chat | null> {
+    //TODO: improve it, and make the sort by createdAt mandatory when the msgs are present
+    const includeStatement = includes
+      ? { include: { ...includes } }
+      : { include: {} };
+
+    const chat = await this.prisma.chat.findUnique({
       where: { id },
-      ...includeStatement
+      ...includeStatement,
     });
+    return chat && chatMapper.toDomain(chat);
   }
 
-  getUserChats(userId: string): Chat[] {
-    return this.prisma.chat.findMany({ where: { userId }, orderBy: { updatedAt: 'desc' }});
+  async getUserChats(userId: string): Promise<Chat[]> {
+    const chats = await this.prisma.chat.findMany({
+      where: { userId },
+      orderBy: { updatedAt: "desc" },
+    });
+    return chats.map(chatMapper.toDomain);
   }
 
-  createChat({ id, userId, name, messages }: Chata) {
-    return prisma.chat.create({
+  async createChat({ id, userId, name, messages }: Chat): Promise<Chat> {
+    const chatCreated = await prisma.chat.create({
       data: {
         id,
         name,
@@ -32,12 +45,15 @@ export default class ChatPrismaRepository implements ChatRepository {
         messages: { create: messages },
       },
     });
+    return chatMapper.toDomain(chatCreated);
   }
 
-  addMessages(chatId: string, messages: Message[]) {
-    return this.prisma.chat.update({
+  async addMessages(chatId: string, messages: Message[]): Promise<Chat> {
+    const chatUpdated = await this.prisma.chat.update({
       where: { id: chatId },
       data: { messages: { createMany: { data: messages } } },
     });
+
+    return chatMapper.toDomain(chatUpdated);
   }
 }

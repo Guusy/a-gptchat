@@ -1,21 +1,28 @@
+import Chat from "../domain/chat";
 import ChatService from "../domain/chat-service";
 import UserMessage from "../domain/message/user-message";
 import chatgptAdapter from "../infrastructure/chatgpt-adapter";
 
 export default class SendMessageUseCase {
   constructor(private chatService: ChatService) {}
-  async execute(chatId: string, content: string, userId: string) {
-    const assistantMessage = await chatgptAdapter.sendMessage(content);
-    // const chat = await this.chatRepository.findById(chatId); //TODO make 404 error handling
-    const messages = [new UserMessage(content), assistantMessage];
+  async execute(chatId: string, content: string, userId: string) : Promise<Chat> {
+    const userMessage = new UserMessage(content);
     if (chatId) {
-      return this.chatService.addMessages(chatId, messages);
+      const chat : Chat = await this.chatService.getChat(chatId, { messages: true });
+      const history = chat.getLastMessages();
+      const assistantMessage = await chatgptAdapter.sendMessage(
+        content,
+        history
+      );
+      return this.chatService.addMessages(chatId, [
+        userMessage,
+        assistantMessage,
+      ]);
     }
-    //TODO: improve name
-    return this.chatService.createChat({
-      name: content.split(" ").slice(0, 8).join(" "),
-      userId: userId,
-      messages,
-    });
+    const assistantMessage = await chatgptAdapter.sendMessage(content);
+    const chatName = content.split(" ").slice(0, 8).join(" ");
+    return this.chatService.createChat(
+      new Chat(userId, chatName, [userMessage, assistantMessage])
+    );
   }
 }

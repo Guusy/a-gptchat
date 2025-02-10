@@ -10,4 +10,9 @@ export default class Chat {
     this.name = name
     this.messages = messages;
   }
+  
+  getLastMessages() {
+    return this.messages.slice(-5);
+  }
+
 }

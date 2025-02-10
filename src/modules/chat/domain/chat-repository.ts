@@ -5,11 +5,11 @@ export interface ChatIncludes {
     messages: boolean
 }
 export default interface ChatRepository {
-  findById(id: string, includes?: ChatIncludes): unknown; //TODO: Chat;
+  findById(id: string, includes?: ChatIncludes): Promise<Chat | null>;
 
-  createChat(chat: Chat): unknown; //TODO: Chat;
+  createChat(chat: Chat): Promise<Chat>;
 
-  addMessages(id: string, messages: Message[]): unknown;
+  addMessages(id: string, messages: Message[]): Promise<Chat>;
 
-  getUserChats(userId: string): Chat[];
+  getUserChats(userId: string): Promise<Chat[]>;
 }
