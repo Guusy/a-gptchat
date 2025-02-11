@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
 class ChatService {
   baseUrl: string | undefined;
   constructor() {
@@ -13,7 +14,17 @@ class ChatService {
   }
 
   async sendMessage({ message, chatId }: { message: string; chatId?: string }) {
-    return axios.post(`/api/chats/messages`, { message, chatId });
+    try {
+      const chat = await axios.post(`/api/chats/messages`, { message, chatId });
+      return chat;
+    } catch (error: unknown) {
+      // I dont know if we want to translate to spanish or we could just use the API response msg...
+      if ((error as AxiosError)?.status === 429) {
+        throw "Has excedido el limite de requests que se pueden hacer en la plataforma, por favor cargue creditos";
+      }
+
+      throw "Un error inesperado ocurrio, intente nuevamente";
+    }
   }
 }
 

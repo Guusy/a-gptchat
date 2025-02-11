@@ -26,6 +26,9 @@ export function ChatInput({
     onMutate: () => {
       setSendingMsg({ message: inputText });
     },
+    onError: () => {
+      setSendingMsg(null);
+    },
     onSuccess: async ({ data }) => {
       setInputText("");
       setSendingMsg(null);
@@ -41,7 +44,7 @@ export function ChatInput({
   const sendMessage = async () => {
     if (!sendMessageMutation.isPending && wordCount <= MAX_TOKENS) {
       if (inputText.trim()) {
-        await sendMessageMutation.mutate({ chatId, message: inputText });
+        sendMessageMutation.mutate({ chatId, message: inputText });
       }
     }
   };
@@ -58,7 +61,6 @@ export function ChatInput({
       setInputText(text);
     }
   };
-
   return (
     <>
       {/* TODO: make this with floating at bottom position */}
@@ -69,7 +71,7 @@ export function ChatInput({
             value={inputText}
             onChange={onChangeInput}
             onKeyDown={handleKeyDown}
-            name='chat-input'
+            name="chat-input"
             rows={4}
             placeholder="Escribe tu mensaje..."
             className="w-full p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-[#323232d9] text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -98,7 +100,7 @@ export function ChatInput({
       </div>
       {sendMessageMutation.error && (
         <div className="p-3 bg-red-500 text-white rounded-lg shadow-md text-center animate-fadeIn mb-2">
-          Hubo un error al enviar el mensaje. Intenta nuevamente.
+          {sendMessageMutation.error.toString()}
         </div>
       )}
     </>

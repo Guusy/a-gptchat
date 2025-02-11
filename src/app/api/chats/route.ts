@@ -10,7 +10,7 @@ export async function GET() {
 
     const chats = await chatService.getUserChats(userDetails.id)
 
-    return buildResponse({ message: 'chats', data: chats, status: 200 })
+    return buildResponse({ data: chats, status: 200 })
   } catch (error) {
     return buildErrorResponse(error)
 

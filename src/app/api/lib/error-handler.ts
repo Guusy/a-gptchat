@@ -21,6 +21,10 @@ const errorMapping: ErrorMapping = {
     status: 400,
     message: "The request exceeds the max token permitted",
   },
+  QuotaLimitIsReached: {
+    status: 429,
+    message: "Quota limit reached for requests"
+  }
 };
 
 export default function errorHandler(error: Error): ErrorHttp {

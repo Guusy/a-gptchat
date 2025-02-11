@@ -1,8 +1,9 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import ChatAiClient from "../../domain/chat-ai-client";
 import AssistantMessage from "../../domain/message/assistant-message";
 import Message from "../../domain/message/message";
 import { ChatGptRequest, ChatGptResponse } from "./types";
+import { QuotaLimitIsReached } from "../../domain/exception/QuotaLimitIsReached";
 
 export default class ChatGptAdapter implements ChatAiClient {
   async sendMessage(
@@ -28,7 +29,10 @@ export default class ChatGptAdapter implements ChatAiClient {
       );
       const [{ message }] = data.choices;
       return new AssistantMessage(message.content);
-    } catch (error) {
+    } catch (error: unknown) {
+      if ((error as AxiosError)?.status === 429) {
+        throw new QuotaLimitIsReached();
+      }
       console.log("Error sending AI msg", error);
       throw error;
     }
