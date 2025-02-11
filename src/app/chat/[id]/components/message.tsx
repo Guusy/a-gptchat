@@ -1,12 +1,13 @@
+import { Message as MessageDomain } from "@/shared/types";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
-export function Message({ role, content }: { role: string; content: string }) {
+export function Message({ role, content }: MessageDomain) {
   const isUser = role === "user";
   //TODO: revisit this logic, should we a better way to do this
   const parsedMessage = content
-    .replace(/\\n\\n/g, "\n\n") 
+    .replace(/\\n\\n/g, "\n\n")
     .replace(/\\n/g, "\n");
 
   return (

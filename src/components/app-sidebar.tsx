@@ -11,14 +11,18 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import chatService from "@/lib/service/chat-service";
+import { Chat } from "@/shared/types";
 import { useQuery } from "@tanstack/react-query";
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 
-export function AppSidebar({ initialData }) {
+interface AppSidebarProps {
+  initialData: Chat[];
+}
+export function AppSidebar({ initialData }: AppSidebarProps) {
   const { data } = useQuery({
     queryKey: ["chats"],
-    queryFn: () => chatService.getChats().then( r => r.data),
+    queryFn: () => chatService.getChats().then((r) => r.data),
     initialData: initialData,
     staleTime: 1000 * 60 * 5,
   });

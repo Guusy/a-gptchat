@@ -2,12 +2,13 @@
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Chat } from "@/shared/types";
 
 export default function ChatLayout({
   chats,
   children,
 }: {
-  chats: unknown[]; //TODO: type all the unknown pls
+  chats: Chat[];
   children: React.ReactNode;
 }) {
   return (

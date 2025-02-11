@@ -5,8 +5,9 @@ import {
 } from "@tanstack/react-query";
 import ChatLayout from "./chat-layout";
 import chatService from "@/lib/service/chat-service";
+import { ReactNode } from "react";
 
-export default async function ChatPage({ children }) {
+export default async function ChatPage({ children }: { children: ReactNode }) {
   const queryClient = new QueryClient();
 
   const chats = (await chatService.getChats()).data;

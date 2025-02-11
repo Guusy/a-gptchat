@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Message } from "./message";
 import { LoaderPinwheel } from "lucide-react";
+import { Chat as ChatType } from "@/shared/types";
 
 export default function Chat({
   id,
   initialData,
 }: {
   id: string;
-  initialData: unknown[];
+  initialData: ChatType;
 }) {
   const [sendingMsg, setSendingMsg] = useState<{ message: string } | null>(
     null
