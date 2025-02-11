@@ -91,7 +91,7 @@ class ChatGptAdapter {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(new AssistantMessage(message.content));
-      }, 3000);
+      }, 700);
     });
   }
 }
