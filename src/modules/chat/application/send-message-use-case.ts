@@ -1,11 +1,11 @@
 import Chat from "../domain/chat";
+import ChatAiClient from "../domain/chat-ai-client";
 import ChatService from "../domain/chat-service";
 import { MaxTokenLimit } from "../domain/exception/MaxTokenLimit";
 import UserMessage from "../domain/message/user-message";
-import chatgptAdapter from "../infrastructure/chatgpt-adapter";
 
 export default class SendMessageUseCase {
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private chatAiClient : ChatAiClient) {}
   async execute(
     chatId: string,
     content: string,
@@ -22,7 +22,7 @@ export default class SendMessageUseCase {
         messages: true,
       });
       const history = chat.getLastMessages();
-      const assistantMessage = await chatgptAdapter.sendMessage(
+      const assistantMessage = await this.chatAiClient.sendMessage(
         content,
         history
       );
@@ -31,7 +31,7 @@ export default class SendMessageUseCase {
         assistantMessage,
       ]);
     }
-    const assistantMessage = await chatgptAdapter.sendMessage(content);
+    const assistantMessage = await this.chatAiClient.sendMessage(content);
     const chatName = content.split(" ").slice(0, 8).join(" ");
     return this.chatService.createChat(
       new Chat(userId, chatName, [userMessage, assistantMessage])

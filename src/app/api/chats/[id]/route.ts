@@ -17,7 +17,6 @@ export async function GET(
     const chat = await chatService.getChat(id, { messages: true });
 
     return buildResponse({
-      message: "Here is the chat",
       data: chat,
       status: 200,
     });

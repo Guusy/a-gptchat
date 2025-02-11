@@ -40,3 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 TODOS.txt
+dev.db
+!.env.example
