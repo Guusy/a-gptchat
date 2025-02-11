@@ -1,20 +1,26 @@
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
-import ChatLayout from "./chat-layout";
+"use client";
 import chatService from "@/lib/service/chat-service";
 import { ReactNode } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useQuery } from "@tanstack/react-query";
+import FullScreenLoader from "@/components/full-screen-loader";
 
-export default async function ChatPage({ children }: { children: ReactNode }) {
-  const queryClient = new QueryClient();
+export default function ChatPage({ children }: { children: ReactNode }) {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["chats"],
+    queryFn: () => chatService.getChats().then((r) => r.data),
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const chats = (await chatService.getChats()).data;
-  queryClient.setQueryData(["chats"], chats);
+  if (error) return <div>Error loading chats</div>;
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ChatLayout chats={chats}>{children}</ChatLayout>
-    </HydrationBoundary>
+    <SidebarProvider>
+      <AppSidebar chats={data} />
+      <SidebarTrigger />
+      <main className="flex-1 p-4 overflow-auto">
+        {isLoading ? <FullScreenLoader size={62} /> : children}
+      </main>
+    </SidebarProvider>
   );
 }

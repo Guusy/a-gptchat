@@ -23,8 +23,16 @@ const errorMapping: ErrorMapping = {
   },
   QuotaLimitIsReached: {
     status: 429,
-    message: "Quota limit reached for requests"
-  }
+    message: "Quota limit reached for requests",
+  },
+  NotValidSession: {
+    status: 401,
+    message: "Unauthorized",
+  },
+  Forbidden: {
+    status: 403,
+    message: "You don't have access to this resource",
+  },
 };
 
 export default function errorHandler(error: Error): ErrorHttp {

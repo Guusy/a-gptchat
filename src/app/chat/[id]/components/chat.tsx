@@ -7,41 +7,31 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Message } from "./message";
 import { LoaderPinwheel } from "lucide-react";
-import { Chat as ChatType } from "@/shared/types";
+import { AxiosError } from "axios";
+import FullScreenLoader from "@/components/full-screen-loader";
 
-export default function Chat({
-  id,
-  initialData,
-}: {
-  id: string;
-  initialData: ChatType;
-}) {
+export default function Chat({ id }: { id: string }) {
   const [sendingMsg, setSendingMsg] = useState<{ message: string } | null>(
     null
   );
   const router = useRouter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (!initialData) {
-      setTimeout(() => {
-        toast({
-          title: "Chat no encontrado",
-          variant: "destructive",
-          duration: 2000,
-        });
-        //TODO: research why this happen
-      }, 0);
-      router.push("/chat");
-    }
-  }, [initialData, router, toast]);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["chat", id],
     queryFn: () => ChatService.getChat(id).then((r) => r.data),
-    initialData,
     staleTime: 1000 * 60 * 5,
   });
+
+  useEffect(() => {
+    if (error && (error as AxiosError).status === 404) {
+      toast({
+        title: "Chat no encontrado",
+        variant: "destructive",
+        duration: 2000,
+      });
+      router.push("/chat");
+    }
+  }, [error, router, toast]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -49,16 +39,13 @@ export default function Chat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data]);
 
-  if (!initialData) return null;
-  if (isLoading) return <p>Cargando chat...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) return <FullScreenLoader size={42} />;
+  if (error) return <p></p>;
 
   return (
     <div className="flex flex-col h-full p-4 overflow-hidden">
-      {/* Nombre del chat */}
       <h1 className="text-xl font-bold pb-4">{data.name}</h1>
 
-      {/* Mensajes */}
       <div className="flex-1 overflow-y-auto space-y-3">
         {data.messages.map(
           (msg: { role: string; content: string }, index: number) => (

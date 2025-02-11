@@ -10,23 +10,14 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import chatService from "@/lib/service/chat-service";
 import { Chat } from "@/shared/types";
-import { useQuery } from "@tanstack/react-query";
 import { SquarePen } from "lucide-react";
 import Link from "next/link";
 
 interface AppSidebarProps {
-  initialData: Chat[];
+  chats: Chat[];
 }
-export function AppSidebar({ initialData }: AppSidebarProps) {
-  const { data } = useQuery({
-    queryKey: ["chats"],
-    queryFn: () => chatService.getChats().then((r) => r.data),
-    initialData: initialData,
-    staleTime: 1000 * 60 * 5,
-  });
-
+export function AppSidebar({ chats }: AppSidebarProps) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -42,7 +33,7 @@ export function AppSidebar({ initialData }: AppSidebarProps) {
           <SidebarGroupLabel>Tus chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.map((chat: { id: string; name: string }) => (
+              {chats?.map((chat: Chat) => (
                 <SidebarMenuItem key={chat.id}>
                   <SidebarMenuButton asChild>
                     <Link href={`/chat/${chat.id}`}>
