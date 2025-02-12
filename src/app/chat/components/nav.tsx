@@ -17,7 +17,7 @@ export default function ChatNav() {
   );
   
   return (
-    <nav className="w-full flex justify-between items-center mb-4">
+    <nav className="sticky bg-color-base z-10 dark top-0 left-0  p-4 w-full flex justify-between items-center mb-4">
       <SidebarTrigger />
 
       <div className="relative inline-block">

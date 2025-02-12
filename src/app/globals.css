@@ -86,3 +86,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.bg-color-base {
+  background-color: hsl(var(--background));
+}

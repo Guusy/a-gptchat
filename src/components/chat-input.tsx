@@ -64,7 +64,7 @@ export function ChatInput({
   return (
     <>
       {/* TODO: make this with floating at bottom position */}
-      <div className="flex justify-center items-center p-4 w-full">
+      <div className="flex bg-color-base justify-center items-center w-full">
         <div className="relative w-full">
           <textarea
             disabled={sendMessageMutation.isPending}

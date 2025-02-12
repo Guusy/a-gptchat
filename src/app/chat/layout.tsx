@@ -21,7 +21,8 @@ export default function ChatPage({ children }: { children: ReactNode }) {
     <SessionProvider>
       <SidebarProvider>
         <AppSidebar chats={data} />
-        <main className="flex-1 p-4 overflow-auto">
+        <main className="flex-1 p-4">
+          
           <ChatNav />
           {isLoading ? <FullScreenLoader size={62} /> : children}
         </main>

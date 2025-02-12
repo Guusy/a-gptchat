@@ -43,29 +43,34 @@ export default function Chat({ id }: { id: string }) {
   if (error) return <p></p>;
 
   return (
-    <div className="flex flex-col h-full p-4 overflow-hidden">
-
-      <div className="flex-1 overflow-y-auto space-y-3">
-        {data.messages.map(
-          (msg: { role: string; content: string }, index: number) => (
-            <Message key={index} role={msg.role} content={msg.content} />
-          )
-        )}
-        {sendingMsg && (
-          <>
-            <Message role="user" content={sendingMsg.message} />
-            <div className="flex justify-start items-center space-x-2">
-              <LoaderPinwheel
-                className="animate-spin text-grey-500"
-                size={18}
-              />
-            </div>
-          </>
-        )}
-        <div ref={messagesEndRef} />
+    <>
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-4 min-h-[80vh]">
+          <div className="space-y-3">
+            {data.messages.map(
+              (msg: { role: string; content: string }, index: number) => (
+                <Message key={index} role={msg.role} content={msg.content} />
+              )
+            )}
+            {sendingMsg && (
+              <>
+                <Message role="user" content={sendingMsg.message} />
+                <div className="flex justify-start items-center space-x-2">
+                  <LoaderPinwheel
+                    className="animate-spin text-grey-500"
+                    size={18}
+                  />
+                </div>
+              </>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
       </div>
 
-      <ChatInput chatId={id} setSendingMsg={setSendingMsg} />
-    </div>
+      <div className="sticky dark w-full bottom-0 left-0 shadow-md">
+        <ChatInput chatId={id} setSendingMsg={setSendingMsg} />
+      </div>
+    </>
   );
 }
