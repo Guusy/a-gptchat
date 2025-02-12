@@ -11,11 +11,17 @@ const handleAuthError = async (error: AxiosError) => {
 
 class ChatService {
   async getChat(id: string) {
-    return axios.get(`/api/chats/${id}`).catch(handleAuthError);
+    return axios
+      .get(`/api/chats/${id}`)
+      .then((r) => r.data)
+      .catch(handleAuthError);
   }
 
   async getChats() {
-    return axios.get(`/api/chats`).catch(handleAuthError);
+    return axios
+      .get(`/api/chats`)
+      .then((r) => r.data)
+      .catch(handleAuthError);
   }
 
   async sendMessage({ message, chatId }: { message: string; chatId?: string }) {

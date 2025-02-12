@@ -12,7 +12,7 @@ import ErrorScreen from "@/components/error-screen";
 export default function ChatPage({ children }: { children: ReactNode }) {
   const { data, error, isLoading } = useQuery({
     queryKey: ["chats"],
-    queryFn: () => chatService.getChats().then((r) => r.data),
+    queryFn: () => chatService.getChats(),
     staleTime: 1000 * 60 * 5,
   });
 

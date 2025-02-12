@@ -21,7 +21,8 @@ export default function Chat({ id }: { id: string }) {
   const { toast } = useToast();
   const { data, isLoading, error } = useQuery<ChatDomain>({
     queryKey: ["chat", id],
-    queryFn: () => ChatService.getChat(id).then((r) => r.data),
+    queryFn: () => ChatService.getChat(id),
+    retry: 1,
   });
 
   useEffect(() => {
