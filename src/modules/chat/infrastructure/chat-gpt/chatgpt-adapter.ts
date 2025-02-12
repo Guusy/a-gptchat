@@ -14,6 +14,7 @@ export default class ChatGptAdapter implements ChatAiClient {
       const body: ChatGptRequest = {
         model: "gpt-4o-mini",
         messages: [
+          { role: 'developer', content: 'You are a good AI, but dont response with mesagges too long, pls, keep it short yours answers'},
           ...history.map((msg) => ({ role: msg.role, content: msg.content })),
           { role: "user", content },
         ],

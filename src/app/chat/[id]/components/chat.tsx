@@ -44,7 +44,6 @@ export default function Chat({ id }: { id: string }) {
 
   return (
     <div className="flex flex-col h-full p-4 overflow-hidden">
-      <h1 className="text-xl font-bold pb-4">{data.name}</h1>
 
       <div className="flex-1 overflow-y-auto space-y-3">
         {data.messages.map(
