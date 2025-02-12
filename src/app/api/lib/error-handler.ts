@@ -39,7 +39,9 @@ const errorMapping: ErrorMapping = {
   },
 };
 
-export default function errorHandler(error: Error): ErrorHttp {
+export default function errorHandler(
+  error: Error & { data?: unknown }
+): ErrorHttp {
   if (error instanceof RateLimiterRes) {
     return {
       status: 429,
@@ -57,6 +59,7 @@ export default function errorHandler(error: Error): ErrorHttp {
   if (!domainError) {
     console.log("Fatal error in the app", error.stack);
   }
+
   return {
     status: errorDetails.status,
     body: { message: errorDetails.message, data: error?.data },
