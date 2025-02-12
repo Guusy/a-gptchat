@@ -1,14 +1,36 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import withSessionProvider from "./hoc/with-session-provider";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import FullScreenLoader from "@/components/full-screen-loader";
 
-export default function Home() {
-  //TODO: style and remote boilerplates clases
+function Home() {
+  const { status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/chat");
+    }
+  }, [status, router]);
+
+  if (status === "authenticated") {
+    return null;
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Button onClick={() => signIn("google", { callbackUrl: "/chat" })}>
-        Login with google
-      </Button>
+    <div className="flex flex-col justify-center items-center min-h-[100vh] p-4">
+      {status === "loading" ? (
+        <FullScreenLoader size={52} />
+      ) : (
+        <Button onClick={() => signIn("google", { callbackUrl: "/chat" })}>
+          Login with google
+        </Button>
+      )}
     </div>
   );
 }
+
+export default withSessionProvider(Home);

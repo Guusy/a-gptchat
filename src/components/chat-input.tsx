@@ -70,7 +70,6 @@ export function ChatInput({
   };
   return (
     <>
-      {/* TODO: make this with floating at bottom position */}
       <div className="flex bg-color-base justify-center items-center w-full">
         <div className="relative w-full">
           <textarea

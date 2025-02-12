@@ -9,7 +9,7 @@ export default interface ChatRepository {
 
   createChat(chat: Chat): Promise<Chat>;
 
-  addMessages(id: string, messages: Message[]): Promise<Chat>;
+  addMessages(chat: Chat, messages: Message[]): Promise<Chat>;
 
   getUserChats(userId: string): Promise<Chat[]>;
 }

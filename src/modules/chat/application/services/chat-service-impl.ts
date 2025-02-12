@@ -24,10 +24,10 @@ export default class ChatServiceImpl implements ChatService {
   }
 
   async addMessages(chatId: string, messages: Message[]): Promise<Chat> {
-    await this.getChat(chatId, {
+    const chat = await this.getChat(chatId, {
       messages: false
-    }); //TODO: i dont like this...
-    return this.chatRepository.addMessages(chatId, messages);
+    });
+    return this.chatRepository.addMessages(chat, messages);
   }
   createChat(chat: Chat): Promise<Chat> {
     return this.chatRepository.createChat(chat);
