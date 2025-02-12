@@ -51,7 +51,7 @@ export default class ChatPrismaRepository implements ChatRepository {
   async addMessages(chatId: string, messages: Message[]): Promise<Chat> {
     const chatUpdated = await this.prisma.chat.update({
       where: { id: chatId },
-      data: { messages: { createMany: { data: messages } } },
+      data: { messages: { createMany: { data: messages } }, updatedAt: new Date() },
     });
 
     return chatMapper.toDomain(chatUpdated);
