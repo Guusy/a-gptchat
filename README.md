@@ -1,51 +1,77 @@
-# GPT chat
+# GPT Chat
 
-A clone of chatgpt UI.
+A clone of the ChatGPT UI.
 
 ## Getting Started
 
-### Enviroment variables
+### Docker Compose
 
-Copy `.env.example` to a `.env` file and fill with your credentials
+The Docker Compose setup includes PostgreSQL, Redis, and pgAdmin. Run the following command to start everything:
 
-#### AI integration
+```bash
+docker-compose up -d
+```
 
-If you want to mock the AI integration, make sure to have `STUB_AI="true"` env variable in place, otherwise is gonna try to connect to openAI
+Then, create your schema in pgAdmin.
+
+### Environment Variables
+
+Copy `.env.example` to a `.env` file and fill it with your credentials.
+
+#### AI Integration
+
+If you want to mock the AI integration, make sure to set the `STUB_AI="true"` environment variable. Otherwise, it will try to connect to OpenAI.
 
 #### Auth
 
-This repo is using [next-auth](https://next-auth.js.org/) to handle the login with google SSO.
-
-So you need to create yours credentials, check the [google docs](https://developers.google.com/identity/protocols/oauth2)
-
+This repository uses [next-auth](https://next-auth.js.org/) to handle login with Google SSO. You need to create your credentials. Check the [Google Docs](https://developers.google.com/identity/protocols/oauth2) for more information.
 
 #### Redis
 
-We are using redis, to have handle the users that are allowed to login in platform, setup `REDIS_URL` env variable, with your local redis.
+We use Redis to handle the users allowed to log in to the platform. Set up the `REDIS_URL` environment variable with your local Redis instance.
 
-### Run the server
+Since this app only allows specific emails to log in, you will need to connect to the Redis instance and add these emails to a specific key.
 
-First, run the development server:
+Connect to the Docker instance:
+
+```bash
+redis-cli -h localhost -p 6379
+```
+
+Add a user:
+
+```bash
+SADD allowed_users "YOUR_SSO_EMAIL@gmail.com"
+```
+
+### Run the Server
+
+If you have all the environment variables in place, create a schema and run the database migrations:
+
+```bash
+npm run db:migrate
+```
+
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
+## Test E2E
 
-## Test e2e
+Make sure you have your local server running.
 
-Make sure you have your local server running
-
-##### Run in debug mode
-
-```bash
-    npm run test:e2e:open
-```    
-
-##### Run in headless mode
+##### Run in Debug Mode
 
 ```bash
-    npm run test:e2e
-```    
+npm run test:e2e:open
+```
+
+##### Run in Headless Mode
+
+```bash
+npm run test:e2e
+```
