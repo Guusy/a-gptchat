@@ -1,16 +1,13 @@
 import axios, { AxiosError } from "axios";
 
 class ChatService {
-  baseUrl: string | undefined;
-  constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  }
+
   async getChat(id: string) {
-    return axios.get(`${this.baseUrl}/api/chats/${id}`);
+    return axios.get(`/api/chats/${id}`);
   }
 
   async getChats() {
-    return axios.get(`${this.baseUrl}/api/chats`);
+    return axios.get(`/api/chats`);
   }
 
   async sendMessage({ message, chatId }: { message: string; chatId?: string }) {
