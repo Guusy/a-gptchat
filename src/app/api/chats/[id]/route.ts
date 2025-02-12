@@ -17,7 +17,6 @@ export async function GET(
 
     const chat = await chatService.getChat(id, { messages: true });
     if (!chat.isOwner(user.id)) {
-      // TODO: handle the 403 case in the FE
       throw new UsersDontMatch();
     }
 

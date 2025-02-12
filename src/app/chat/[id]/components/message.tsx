@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 
 export function Message({ role, content }: MessageDomain) {
   const isUser = role === "user";
-  //TODO: revisit this logic, should we a better way to do this
+  //TODO: revisit this logic, should we a better way to do this, and use a code highlighter
   const parsedMessage = content
     .replace(/\\n\\n/g, "\n\n")
     .replace(/\\n/g, "\n");
