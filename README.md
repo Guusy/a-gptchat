@@ -19,6 +19,10 @@ This repo is using [next-auth](https://next-auth.js.org/) to handle the login wi
 So you need to create yours credentials, check the [google docs](https://developers.google.com/identity/protocols/oauth2)
 
 
+#### Redis
+
+We are using redis, to have handle the users that are allowed to login in platform, setup `REDIS_URL` env variable, with your local redis.
+
 ### Run the server
 
 First, run the development server:

@@ -3,12 +3,15 @@ import User, { UserBuilder } from "../domain/user";
 import UserRepository from "../domain/user-repository";
 import prisma from "@/modules/shared/prisma";
 import AllowedUser from "../domain/allowed-user";
+import Redis from "ioredis";
 
-export default class UserPrismaRepository implements UserRepository {
+export default class UserRepositoryImpl implements UserRepository {
   prisma: PrismaClient;
+  redis: Redis;
 
   constructor() {
     this.prisma = prisma;
+    this.redis = new Redis(process.env.REDIS_URL!); // Conexión a Redis
   }
 
   async findOrCreate(user: User): Promise<User> {
@@ -25,8 +28,11 @@ export default class UserPrismaRepository implements UserRepository {
       .build();
   }
 
-  findAllowedUser(email: string): Promise<AllowedUser | null> {
-    //TODO: migrate to redis
-    return this.prisma.allowedUser.findUnique({ where: { email } });
+  async findAllowedUser(email: string): Promise<AllowedUser | null> {
+    const exists = await this.redis.sismember("allowed_users", email);
+    if (exists) {
+      return { email };
+    }
+    return null;
   }
 }

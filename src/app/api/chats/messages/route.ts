@@ -7,7 +7,11 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 import getChatService from "@/modules/ioc/get-chat-service";
 import getChatAIClient from "@/modules/ioc/get-chat-ai-client";
 
-// If we want to go to a prod env, we need to handle this in a redis, not in memory
+// If we want to go to a prod env, we need to handle this in a redis, not in memory, using RateLimiterRedis
+// To avoid reach the limit inside upstash we keep in memory, but if u want to go to real prod env
+// take in consideration use a redis, to be able to handle multiple instances
+// also you could add extend this rate limiter to other endpoints
+
 const rateLimiter = new RateLimiterMemory({
   points: 5,
   duration: 20,

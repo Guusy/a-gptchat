@@ -1,13 +1,13 @@
 import UserRepository from "../domain/user-repository";
 import UserService from "../domain/user-service";
-import UserPrismaRepository from "../infrastructure/user-prisma-repository";
 import User from "../domain/user";
+import UserRepositoryImpl from "../infrastructure/user-repository-impl";
 
 export default class UserServiceImpl implements UserService {
   userRepository: UserRepository;
 
   constructor() {
-    this.userRepository = new UserPrismaRepository();
+    this.userRepository = new UserRepositoryImpl();
   }
   
   createUserIfNotExists(user: User): Promise<User> {
