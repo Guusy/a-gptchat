@@ -11,14 +11,36 @@ export function Message({ role, content }: MessageDomain) {
     .replace(/\\n/g, "\n");
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} `}>
       <div
         className={`p-3 rounded-lg max-w-2xl ${
           isUser ? "bg-[#323232d9] text-white border" : "bg-transparent"
         }`}
       >
         <div className="text-sm text-gray-900 dark:text-gray-100">
-          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            components={{
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              code({ inline, className, children, ...props }) {
+                if (!inline) {
+                  return (
+                    <pre className="mt-2 p-4 bg-gray-800 rounded-md  text-wrap">
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </pre>
+                  );
+                }
+                return (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          >
             {parsedMessage}
           </ReactMarkdown>
         </div>

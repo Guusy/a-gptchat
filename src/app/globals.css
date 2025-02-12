@@ -90,3 +90,7 @@ body {
 .bg-color-base {
   background-color: hsl(var(--background));
 }
+
+.text-wrap {
+  text-wrap: auto;
+}

@@ -55,7 +55,7 @@ export default function Chat({ id }: { id: string }) {
   return (
     <>
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 min-h-[80vh]">
+        <div className="h-full overflow-y-auto min-h-[80vh]">
           <div className="space-y-3">
             {messages.map(
               (msg: { role: string; content: string }, index: number) => (
