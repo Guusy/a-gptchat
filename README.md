@@ -12,6 +12,13 @@ Copy `.env.example` to a `.env` file and fill with your credentials
 
 If you want to mock the AI integration, make sure to have `STUB_AI="true"` env variable in place, otherwise is gonna try to connect to openAI
 
+#### Auth
+
+This repo is using [next-auth](https://next-auth.js.org/) to handle the login with google SSO.
+
+So you need to create yours credentials, check the [google docs](https://developers.google.com/identity/protocols/oauth2)
+
+
 ### Run the server
 
 First, run the development server:

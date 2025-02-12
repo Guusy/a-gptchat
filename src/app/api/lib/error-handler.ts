@@ -33,6 +33,10 @@ const errorMapping: ErrorMapping = {
     status: 403,
     message: "You don't have access to this resource",
   },
+  UsersDontMatch: {
+    status: 403,
+    message: "You don't have access to this resource",
+  },
 };
 
 export default function errorHandler(error: Error): ErrorHttp {

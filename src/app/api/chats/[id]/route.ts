@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import buildResponse from "../../lib/build-response";
 import buildErrorResponse from "../../lib/build-error-response";
 import authService from "@/modules/auth/infrastructure/auth-service-impl";
-import { Forbidden } from "@/modules/auth/domain/exception/Forbidden";
+import { UsersDontMatch } from "@/modules/chat/domain/exception/UsersDontMatch";
 
 export async function GET(
   req: NextRequest,
@@ -16,9 +16,9 @@ export async function GET(
     const chatService = getChatService();
 
     const chat = await chatService.getChat(id, { messages: true });
-    if (chat.userId !== user.id) {
+    if (!chat.isOwner(user.id)) {
       // TODO: handle the 403 case in the FE
-      throw new Forbidden();
+      throw new UsersDontMatch();
     }
 
     return buildResponse({

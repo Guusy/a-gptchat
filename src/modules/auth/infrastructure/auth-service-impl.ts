@@ -8,8 +8,7 @@ class AuthServiceImpl {
     if (!session) {
       throw new NotValidSession();
     }
-    // TODO: use the real id
-    return Promise.resolve({ id: "cm6wap5i900002845efpd0cce" });
+    return Promise.resolve({ id: session.user.id });
   }
 }
 const authService = new AuthServiceImpl();

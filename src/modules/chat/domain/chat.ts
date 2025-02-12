@@ -15,4 +15,8 @@ export default class Chat {
     return this.messages.slice(-5);
   }
 
+  isOwner(userId: string){
+    return this.userId === userId
+  }
+
 }

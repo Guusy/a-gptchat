@@ -2,9 +2,11 @@
 import chatService from "@/lib/service/chat-service";
 import { ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import FullScreenLoader from "@/components/full-screen-loader";
+import { SessionProvider } from "next-auth/react";
+import ChatNav from "./components/nav";
 
 export default function ChatPage({ children }: { children: ReactNode }) {
   const { data, error, isLoading } = useQuery({
@@ -13,14 +15,17 @@ export default function ChatPage({ children }: { children: ReactNode }) {
     staleTime: 1000 * 60 * 5,
   });
 
+  // TODO: use better errors
   if (error) return <div>Error loading chats</div>;
   return (
-    <SidebarProvider>
-      <AppSidebar chats={data} />
-      <SidebarTrigger />
-      <main className="flex-1 p-4 overflow-auto">
-        {isLoading ? <FullScreenLoader size={62} /> : children}
-      </main>
-    </SidebarProvider>
+    <SessionProvider>
+      <SidebarProvider>
+        <AppSidebar chats={data} />
+        <main className="flex-1 p-4 overflow-auto">
+          <ChatNav />
+          {isLoading ? <FullScreenLoader size={62} /> : children}
+        </main>
+      </SidebarProvider>
+    </SessionProvider>
   );
 }
