@@ -12,8 +12,6 @@ The Docker Compose setup includes PostgreSQL, Redis, and pgAdmin. Run the follow
 docker-compose up -d
 ```
 
-Then, create your schema in pgAdmin.
-
 ### Environment Variables
 
 Copy `.env.example` to a `.env` file and fill it with your credentials.
@@ -44,7 +42,19 @@ Add a user:
 SADD allowed_users "YOUR_SSO_EMAIL@gmail.com"
 ```
 
+Check the set of allowed users:
+
+```bash
+    SMEMBERS allowed_users
+```
+
 ### Run the Server
+
+Install dependencies
+
+```bash
+    npm install
+```
 
 If you have all the environment variables in place, create a schema and run the database migrations:
 
