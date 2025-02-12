@@ -13,7 +13,7 @@ class ChatService {
   async sendMessage({ message, chatId }: { message: string; chatId?: string }) {
     try {
       const chat = await axios.post(`/api/chats/messages`, { message, chatId });
-      return chat;
+      return chat.data;
     } catch (error: unknown) {
       // I dont know if we want to translate to spanish or we could just use the API response msg...
       if ((error as AxiosError)?.status === 429) {

@@ -1,18 +1,22 @@
 "use client";
 import { MAX_TOKENS } from "@/lib/constants";
 import chatService from "@/lib/service/chat-service";
+import { Message, SendMessageResponseDto } from "@/shared/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+interface ChatInputProps {
+  chatId?: string;
+  setSendingMsg?: (msg: { message: string } | null) => void;
+  newMessages?: (messages: Message[]) =>  void
+}
 export function ChatInput({
   chatId,
   setSendingMsg = () => {},
-}: {
-  chatId?: string;
-  setSendingMsg?: (msg: { message: string } | null) => void;
-}) {
+  newMessages = () => {}
+}: ChatInputProps) {
   const [inputText, setInputText] = useState("");
   const wordCount = useMemo(
     () => inputText.trim().split(/\s+/).length,
@@ -29,14 +33,17 @@ export function ChatInput({
     onError: () => {
       setSendingMsg(null);
     },
-    onSuccess: async ({ data }) => {
+    onSuccess: async (data: SendMessageResponseDto) => {
+      newMessages([
+        { role: 'user', content: inputText},
+        data.newMessage
+      ])
       setInputText("");
       setSendingMsg(null);
-      if (chatId) {
-        queryClient.invalidateQueries({ queryKey: ["chat", chatId] });
-      } else {
+      // TODO: find a way to invalidate cache of the chat_id but not refetch immediately
+      if (!chatId) {
+        router.replace(`/chat/${data.chat.id}`);
         await queryClient.invalidateQueries({ queryKey: ["chats"] });
-        router.replace(`/chat/${data.id}`);
       }
     },
   });

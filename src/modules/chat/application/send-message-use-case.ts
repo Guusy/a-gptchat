@@ -4,6 +4,7 @@ import ChatService from "../domain/chat-service";
 import { MaxTokenLimit } from "../domain/exception/MaxTokenLimit";
 import { UsersDontMatch } from "../domain/exception/UsersDontMatch";
 import UserMessage from "../domain/message/user-message";
+import SendMessageResponseDto from "./dto/send-message-response.dto";
 
 export default class SendMessageUseCase {
   constructor(
@@ -14,7 +15,7 @@ export default class SendMessageUseCase {
     chatId: string,
     content: string,
     userId: string
-  ): Promise<Chat> {
+  ): Promise<SendMessageResponseDto> {
     const userMessage = new UserMessage(content);
 
     if (userMessage.exceedsMaxTokenLimit()) {
@@ -33,15 +34,18 @@ export default class SendMessageUseCase {
         content,
         history
       );
-      return this.chatService.addMessages(chatId, [
+      await this.chatService.addMessages(chatId, [
         userMessage,
         assistantMessage,
       ]);
+      return { chat, newMessage: assistantMessage };
     }
     const assistantMessage = await this.chatAiClient.sendMessage(content);
     const chatName = content.split(" ").slice(0, 8).join(" ");
-    return this.chatService.createChat(
+    const chat = await this.chatService.createChat(
       new Chat(userId, chatName, [userMessage, assistantMessage])
     );
+
+    return { chat, newMessage: assistantMessage };
   }
 }

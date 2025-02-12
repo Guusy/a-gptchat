@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
       getChatAIClient()
     );
     
-    const chat = await sendMessageUseCase.execute(
+    const responseMessage = await sendMessageUseCase.execute(
       chatId,
       message,
       userDetails.id
     );
 
-    return buildResponse({ data: chat, status: 201 });
+    return buildResponse({ data: responseMessage, status: 201 });
   } catch (error: unknown) {
     return buildErrorResponse(error);
   }

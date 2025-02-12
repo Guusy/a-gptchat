@@ -14,7 +14,7 @@ export default function ChatHome() {
   };
 
   return (
-    <div className="flex flex-col justify-start items-center min-h-[60vh] p-4">
+    <div className="flex flex-col justify-start items-center min-h-[60vh] p-4 ">
       {isCreatingChat ? (
         <LoaderPinwheel className="animate-spin text-grey-500" size={24} />
       ) : (
