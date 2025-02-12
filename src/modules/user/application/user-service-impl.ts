@@ -9,7 +9,13 @@ export default class UserServiceImpl implements UserService {
   constructor() {
     this.userRepository = new UserPrismaRepository();
   }
+  
   createUserIfNotExists(user: User): Promise<User> {
     return this.userRepository.findOrCreate(user);
+  }
+
+  async isAnAllowedUser(email: string): Promise<boolean> {
+    const allowedUser = await this.userRepository.findAllowedUser(email);
+    return !!allowedUser
   }
 }

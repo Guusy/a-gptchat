@@ -1,8 +1,6 @@
 import getUserService from "@/modules/ioc/get-user-service";
 import GoogleProvider from "next-auth/providers/google";
 
-// TODO: use persist data and fix types of callbacks
-const whitelistedEmails = [ "" ];
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -16,8 +14,11 @@ export const authOptions = {
   },
   callbacks: {
     async signIn({ user }): Promise<boolean> {
-      if (whitelistedEmails.includes(user.email)) {
-        const userService = getUserService();
+      const userService = getUserService();
+
+      const isAllowedUser = await userService.isAnAllowedUser(user.email);
+
+      if (isAllowedUser) {
         const userCreated = await userService.createUserIfNotExists(user);
         return !!userCreated;
       }
