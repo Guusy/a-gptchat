@@ -2,6 +2,7 @@ import { Message as MessageDomain } from "@/shared/types";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+import MarkdownCode from "./markdown-code";
 
 export function Message({ role, content }: MessageDomain) {
   const isUser = role === "user";
@@ -9,7 +10,6 @@ export function Message({ role, content }: MessageDomain) {
   const parsedMessage = content
     .replace(/\\n\\n/g, "\n\n")
     .replace(/\\n/g, "\n");
-
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} `}>
       <div
@@ -21,24 +21,11 @@ export function Message({ role, content }: MessageDomain) {
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkBreaks]}
             components={{
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              code({ inline, className, children, ...props }) {
-                if (!inline) {
-                  return (
-                    <pre className="mt-2 p-4 bg-gray-800 rounded-md  text-wrap">
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    </pre>
-                  );
-                }
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              },
+              code: (props) => (
+                <MarkdownCode {...props} className={props.className || ""}>
+                  {String(props.children)}
+                </MarkdownCode>
+              ),
             }}
           >
             {parsedMessage}

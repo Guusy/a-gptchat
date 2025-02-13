@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint && npx tsc --noEmit",
     "db:migrate": "prisma migrate dev",
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
