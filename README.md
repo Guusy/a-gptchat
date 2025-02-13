@@ -85,3 +85,10 @@ npm run test:e2e:open
 ```bash
 npm run test:e2e
 ```
+
+
+## TODOS
+
+- Use the event stream OpenAI API to improve the UX and response time, instead of a normal HTTP request.
+
+- Change the flow of new chat. We should create a chat with the initial message (user), redirect to the chat/:id, and then send the message to the AI. This new flow will improve the UX because the user will not need to wait for the entire response of the AI to change the view.
